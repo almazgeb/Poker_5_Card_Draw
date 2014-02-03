@@ -4,8 +4,19 @@
  * Class: CS 342 Computer System
  *
  * Created by Adam Socik
- * January 2013
+ * January-February 2013
  ----------------------------------------------------------------------------*/
+/*
+ * A card pile is a class to hold the data structure of the 52 card deck which 
+ * is an array of Card objects. There is also an integer that is used as an 
+ * array index to signify the top of the deck. 
+ * 
+ * The class' constructor creates and initializes a 52 card deck and the shuffles it.
+ * The class' methods include a getter for the top of the deck, a drawCard method,
+ * and a method to print the deck.
+ *  
+ */
+
 import java.util.*;
 
 public class CardPile 
@@ -76,8 +87,9 @@ public class CardPile
 			}
 		}
 		
+		// Left this here for debugging
 		System.out.print("Unshuffled -> ");
-		printDeck();	// Left this here for debugging
+		printDeck();	
 		
 		Collections.shuffle(Arrays.asList(deck));	// Shuffle the deck
 		

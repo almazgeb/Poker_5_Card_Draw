@@ -13,6 +13,7 @@
 public class Player {
 	private Card hand[];	//The player's hand
 	private int hand_count;	//The player's hand count
+	private int strength;
 	
 	/* Constructs a player holding no cards. 
 	 */
@@ -22,6 +23,7 @@ public class Player {
 		for (int i=0; i<5; i++) {
 			hand[i] = null;
 		}
+		strength = 0;	//0 is the lowest strength
 	}//end Player()
 	
 	/* Objective: Draws a card from the deck and puts the card in the player's hand.
@@ -61,6 +63,15 @@ public class Player {
 		return discard;
 	}//end discardCard
 	
+	public int getStrength() {
+		return strength;
+	}//end getStrength()
+	
+	public int setStrength(int new_strength) {
+		strength = new_strength;
+		return strength;
+	}//end setStrength()
+	
 	/* Objective: Return the player's hand.
 	 * Returns: Player's hand.
 	 */
@@ -74,6 +85,7 @@ public class Player {
 	public String toString(){
 		String players_hand = "";
 		for (int i=0; i<hand_count; i++) {
+			players_hand.concat(hand[i].getCard() + " ");
 		}
 		players_hand.concat("\n");
 		return players_hand;

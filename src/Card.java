@@ -4,9 +4,15 @@
  * Class: CS 342 Computer System
  *
  * Created by Adam Socik
- * January 2013
+ * January-February 2013
  ----------------------------------------------------------------------------*/
-
+/*
+ * A card is a 2 character string with index 0 representing the rank of the
+ * card and index 0 representing the suit of the card.
+ * 
+ * This class' methods are all setters and getters that initialize the card,
+ * and can return the card itself, the suit, or the rank.
+ */
 public class Card 
 {
 	private String card;
