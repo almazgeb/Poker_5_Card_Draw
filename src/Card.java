@@ -41,4 +41,16 @@ public class Card
 	{
 		return card.charAt(1);
 	}
+	
+	public int getNumericRank() {
+		char rank = getRank();
+		switch (rank) {
+			case 'A': return 14;
+			case 'K': return 13;
+			case 'Q': return 12;
+			case 'J': return 11;
+			case 'T': return 10;
+			default: return Character.getNumericValue(rank);
+		}
+	}
 }

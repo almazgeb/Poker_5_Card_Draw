@@ -13,7 +13,7 @@
 public class Player {
 	private Card hand[];	//The player's hand
 	private int hand_count;	//The player's hand count
-	private int strength;
+	private int strength;	//The player's hand strength based on evaluation, 0 is lowest
 	
 	/* Constructs a player holding no cards. 
 	 */
@@ -60,13 +60,19 @@ public class Player {
 	public Card discardCard(int card) {
 		Card discard = hand[card];
 		hand[card] = null;
+		hand_count--;
+		hand[card] = hand[hand_count-1];
 		return discard;
 	}//end discardCard
 	
+	/* Returns: Player's hand strength.*/
 	public int getStrength() {
 		return strength;
 	}//end getStrength()
 	
+	/* Objective: Sets player's hand strength.
+	 * Returns: New hand strength.
+	 */
 	public int setStrength(int new_strength) {
 		strength = new_strength;
 		return strength;
@@ -79,12 +85,10 @@ public class Player {
 		return hand;
 	}//end getHand()
 	
-	/* Objective: Return a String of the player's hand.
-	 * Returns: A String of the player's hand.
-	 */
+	/* Returns: A String of the player's hand.*/
 	public String toString(){
 		String players_hand = "";
-		for (int i=0; i<hand_count; i++) {
+		for (int i=0; i<hand.length && hand[i] != null; i++) {
 			players_hand.concat(hand[i].getCard() + " ");
 		}
 		players_hand.concat("\n");
@@ -113,6 +117,54 @@ public class Player {
 	
 	/* Sorts the player's hand. */
 	private void sortHand() {
-		//Note: Todo later.
+		HandHash hand_hash = new HandHash();
+		char top_rank=0;
+		Card new_hand[] = new Card[5];
+		int new_hand_count=0;
+		int top_index=0;
+		
+		for (int i=0; i<5; i++) {
+			new_hand[i] = null;
+		}
+		
+		for(int i=0; i<5 && hand[i] != null; i++) {
+			hand_hash.add(hand[i]);
+		}
+		
+		top_rank = hand_hash.getTopRank();
+		while (top_rank != 'E' && top_rank != 'S') {
+			for (int i=0; i<hand.length; i++) {
+				if (hand[i] != null && hand[i].getRank() == top_rank) {
+					new_hand[new_hand_count++] = hand[i];
+					hand[i] = null;
+				}
+			}
+			top_rank = hand_hash.getTopRank();
+		}
+		
+		top_index=getTopIndex(hand);
+		while (top_index < hand.length) {
+			new_hand[new_hand_count++] = hand[top_index];
+		}
+		
+		for (int i=0; i<hand.length; i++) {
+			hand[i] = new_hand[i];
+		}
 	}//end sortHand()
+	
+	private int getTopIndex(Card hand[]) {
+		int top_index=0;
+		
+		while (top_index < hand.length && hand[top_index] == null) { top_index++; }
+		
+		if (top_index >= hand.length) { return top_index; }
+		
+		for (int i=0; i<hand.length; i++) {
+			if (hand[i] != null && hand[i].getNumericRank() > hand[top_index].getNumericRank()) {
+				top_index = i;
+			}
+		}
+		
+		return top_index;
+	}//end getTopIndex
 }//end Player
