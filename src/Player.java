@@ -91,6 +91,26 @@ public class Player {
 		return players_hand;
 	}//end printHand()
 	
+	//------------------------------------------------------------------------------
+	public void printHand()
+	{
+		for (int i=0; i<5; i++)
+			System.out.print((i+1) + ") " + hand[i].getCard() + "   ");
+	}
+	
+	public int drawTargetCard(CardPile deck, int index)
+	{
+		if (hand_count > 5) 
+		{
+			System.out.println("Invalid: You cannot draw another card.");
+			return -1;
+		}
+		hand[index] = deck.drawCard();
+		return hand_count;
+	}
+	
+	//------------------------------------------------------------------------------
+	
 	/* Sorts the player's hand. */
 	private void sortHand() {
 		//Note: Todo later.

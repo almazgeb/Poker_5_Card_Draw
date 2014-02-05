@@ -90,12 +90,14 @@ public class CardPile
 		// Left this here for debugging
 		System.out.print("Unshuffled -> ");
 		printDeck();	
+		System.out.println();
 		
 		Collections.shuffle(Arrays.asList(deck));	// Shuffle the deck
 		
 		// Left this here for debugging
 		System.out.print("\nShuffled   -> ");
 		printDeck();
+		System.out.println();
 	}
 		
 	// Returns the current position of the deck array
