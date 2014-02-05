@@ -9,10 +9,16 @@ public class Evaluate
 	private Card hand[];
 	
 	// Need a constructor for the hand
+	public Evaluate(Player p) {
+		hand = p.getHand();
+	}//end Evaluate
 	
-	
-	
-	
+	/* Returns strength of hand.
+	 * 
+	 */
+	public int getEvaluation() {
+		
+	}//end getEvaluation()
 	
 	/**
 	 * Checks to see if hand is a straight flush. A straight flush occurs when

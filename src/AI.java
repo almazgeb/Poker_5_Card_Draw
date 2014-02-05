@@ -1,5 +1,5 @@
 public class AI extends Player {
-	public AI {
+	public AI() {
 		
 	}//end AI
 	
