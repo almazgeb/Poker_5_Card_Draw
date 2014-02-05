@@ -11,9 +11,9 @@
  */
 
 public class Player {
-	private Card hand[];	//The player's hand
+	protected Card hand[];	//The player's hand
 	private int hand_count;	//The player's hand count
-	private int strength;	//The player's hand strength based on evaluation, 0 is lowest
+	protected int strength;	//The player's hand strength based on evaluation, 0 is lowest
 	
 	/* Constructs a player holding no cards. 
 	 */
