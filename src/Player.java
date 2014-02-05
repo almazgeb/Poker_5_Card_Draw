@@ -82,11 +82,13 @@ public class Player {
 	 * Returns: Player's hand.
 	 */
 	public Card[] getHand() {
+		sortHand();
 		return hand;
 	}//end getHand()
 	
 	/* Returns: A String of the player's hand.*/
 	public String toString(){
+		sortHand();
 		String players_hand = "";
 		for (int i=0; i<hand.length && hand[i] != null; i++) {
 			players_hand.concat(hand[i].getCard() + " ");

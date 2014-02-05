@@ -21,25 +21,7 @@ public class HandHash {
 	 * Returns: Nothing
 	 */
 	public void add(Card c) {
-		int rank = (int)(c.getRank());
-		if (rank == 'T') {
-			hand_hash[8]++;
-		}
-		else if (rank == 'J') {
-			hand_hash[9]++;
-		}
-		else if (rank == 'Q') {
-			hand_hash[10]++;
-		}
-		else if (rank == 'K') {
-			hand_hash[11]++;
-		}
-		else if (rank == 'A') {
-			hand_hash[12]++;
-		}
-		else {
-			hand_hash[(Character.getNumericValue(rank))-2]++;
-		}
+		hand_hash[c.getNumericRank()-2]++;
 		getTopDup();
 	}//end add
 	
