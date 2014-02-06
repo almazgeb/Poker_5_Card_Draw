@@ -1,85 +1,122 @@
-/* comparison methods (e.g. isStraightFlush)
- * tie braking methods
- * call evaluate(player p1, player p2)
- * every other one, StarightFlush = 9 = Adam, FourOfAKind = 8 = Emily (evens)
+/*----------------------------------------------------------------------------
+ * 5 Card Draw Poker
+ *
+ * Class: CS 342 Computer System
+ *
+ * Created by Adam Socik
+ * January-February 2013
+ ----------------------------------------------------------------------------*/
+/*
+ * Will add description
+ * 
+ * 
+ * 
+ * 
  */
-
 public class Evaluate 
 {
 	private Card hand[];
 	
-	// Need a constructor for the hand
-	public Evaluate(Player p) {
+	public Evaluate(Player p) 
+	{
 		hand = p.getHand();
-	}//end Evaluate
-	
-	/* Returns strength of hand.
-	 * 
-	 */
-	public int getEvaluation() {
 		
-	}//end getEvaluation()
+		/*// Test code
+		hand[0].setCard("2S");
+		hand[1].setCard("3S");
+		hand[2].setCard("4S");
+		hand[3].setCard("5S");
+		hand[4].setCard("AH");
+		*/
+	}
 	
-	/**
+	/**------------------------------------------------------------------------
+	 * Returns the strength of the hand. 9 is the highest strength and 1 
+	 * is the lowest
+	 * 
+	 * @return	integer value of the strength
+	 ------------------------------------------------------------------------*/
+	public int getEvaluation() 
+	{
+		if (this.isStraightFlush() == true)
+			return 9;
+		else if (this.ofaKind(4) == true)
+			return 8;
+		else if (this.isFullHouse() == true)
+			return 7;
+		else if (this.isFlush() == true)
+			return 6;
+		else if (this.isStraight() == true)
+			return 5;
+		else if (this.ofaKind(3) == true)
+			return 4;
+		else if (this.isTwoPair() == true)
+			return 3;
+		else if (this.ofaKind(2) == true)
+			return 2;
+		else 
+			return 1;	
+	}
+	
+	/**------------------------------------------------------------------------
 	 * Checks to see if hand is a straight flush. A straight flush occurs when
 	 * a hand contains five cards that are in a sequence and of the same suit.
 	 * Note ace can be used as high or low cards.
-	 * EX: AS KS QS JS TS or 5H 4H 3H 2H AH
+	 * ex: AS KS QS JS TS or 5H 4H 3H 2H AH
 	 * 
-	 * @return	True if hand is a straight flush, false otherwise
-	 */
-	public boolean isStraightFlush()
+	 * @return	true / false
+	 ------------------------------------------------------------------------*/
+	private boolean isStraightFlush()
 	{
-		// First check to see if hand is a straight 
-		if (!this.isStraight())
+		if (this.isStraight() == true && this.isFlush() == true)
+			return true;
+		else 
 			return false;
-		
-		// Check to see if suit of each card is the same
+	} 
+
+	/**------------------------------------------------------------------------
+	 * Checks to see if a hand contains a full house. A full house occurs when 
+	 * a hand contains three cards with the same rank and two cards that have 
+	 * a different same rank (ex: AS AH AD 2S 2D)
+	 * 
+	 * @return	true / false
+	 ------------------------------------------------------------------------*/
+	private boolean isFullHouse()
+	{
+		if (this.ofaKind(3) == true && this.ofaKind(2) == true)
+			return true;
+		else 
+			return false;
+	} 
+	
+	/**------------------------------------------------------------------------
+	 * Checks to see if the hand contains cards of all the same suit
+	 * 
+	 * @return true  /false
+	 ------------------------------------------------------------------------*/
+	private boolean isFlush()
+	{
 		char suit = hand[0].getSuit();		// Use first card as default
 		
 		for (int i = 1; i <	 hand.length; i++) 
-		{
 			if (hand[i].getSuit() != suit)
 				return false;
-		}
-		
-		return true;
-	} // End isStraightFlush()
 	
-	/**
-	 * Checks to see if a hand contains a full house. A full house occurs when a hand contains
-	 * three cards with the same rank and two cards that have a different same rank.
-	 * EX: AS AH AD 2S 2D
-	 * 
-	 * @return	True if hand is a full house, false otherwise
-	 */
-	public boolean isFullHouse()
-	{
-		// I'm waiting for isOnePair and isThreeOfaKind
-		
-		
-		
-		
-		
-		
-		
-		return true;
-	} // End isFullHouse()
-		
-	/**
+		return true;	
+	}
+	
+	/**------------------------------------------------------------------------
 	 * Checks to see if hand is a straight. A straight is when all five cards
-	 * are in sequence, ace can be either high or low cards
-	 * EX: AS KD QS JH TC or 5S 4D 3H 2C AS
+	 * are in sequence, ace can be either high or low cards.
+	 * ex: AS KD QS JH TC or 5S 4D 3H 2C AS
 	 * 
-	 * @return	True if hand is a straight, false otherwise
-	 */
-	public boolean isStraight()
+	 * @return	true / false
+	 ------------------------------------------------------------------------*/
+	private boolean isStraight()
 	{
-		/*
-		 * Array to keep the count of the occurrence of each rank. Each index of the array
-		 * applies to the rank i.e. index 2 applies to index 2. Index 0 is meaningless,
-		 * ace applies to both index 1 and 14.
-		 */
+		// Array to keep the count of the occurrence of each rank. Each index of
+		// the array applies to the rank of a card (index 2 applies to rank of 2) 
+		// Index 0 is placeholder, ace applies to index 1 and 14.
 		int rankCount[] = new int[15];
 		
 		// Initialize all values to 0
@@ -88,45 +125,41 @@ public class Evaluate
 		
 		// Count the occurrence of each card
 		for (int i = 0; i < hand.length; i++) 
-		{
-			char rank = hand[i].getRank();
-			rankCount[getNumericalRank(rank)]++;
-		}
+			rankCount[hand[i].getNumericRank()]++;
 		
 		rankCount[1] = rankCount[14];	// Ace can be low or high rank
 		
-		// Look for a straight
-		int count = 0;
-		
-		for (int i = 1; i < rankCount.length; i++) 
+		// Look for a straight		
+		for (int i = 1; i < 11; i++) 
 		{
-			if (rankCount[i] > 1)	// More than one can with the same rank
+			if (rankCount[i] > 1)	// More than one card with the same rank
 				return false;
 			
 			if (rankCount[i] == 1)
 			{
-				rankCount[i] = -1; 
-				if (count != 0 && rankCount[i-1] != -1)		// Make sure rank behind is in hand
+				// If hand has 1 of the next higher ranked cards
+				if (rankCount[i+1] == 1 && rankCount[i+2] == 1 && rankCount[i+3] == 1 && rankCount[i+4] == 1)
+					return true;
+				// If hand has ace and low ace is not straight check if high ace causes straight
+				else if (i == 1 && rankCount[i+9] == 1 && rankCount[i+10] == 1 
+						 && rankCount[i+11] == 1 && rankCount[i+12] == 1) 
+					return true;
+				else 
 					return false;
-				count++;
 			}
 		}
 		
-		return true;
-	} // End isStraight()
-	
-	/**
-	 * Method checks if there are 2 pairs in the hand
+		return false;
+	}
+	 	
+	/**------------------------------------------------------------------------
+	 * Method checks if there are 2 pairs of cards with the same rank in the 
+	 * hand.
 	 * 
-	 * @return	True if there exists a pair, false otherwise
-	 */
-	public boolean isTwoPair()
+	 * @return	true/ false
+	 ------------------------------------------------------------------------*/
+	private boolean isTwoPair()
 	{
-		/*
-		 * Array to keep the count of the occurrence of each rank. Each index of the array
-		 * applies to the rank i.e. index 2 applies to index 2. Index 0 and 1 are meaningless,
-		 * ace applies to index 14.
-		 */
 		int rankCount[] = new int[15];
 		
 		// Initialize all values to 0
@@ -135,10 +168,7 @@ public class Evaluate
 		
 		// Count the occurrence of each card
 		for (int i = 0; i < hand.length; i++) 
-		{
-			char rank = hand[i].getRank();
-			rankCount[getNumericalRank(rank)]++;
-		}
+			rankCount[hand[i].getNumericRank()]++;
 		
 		int twoPairCount = 0;
 		// Check for pairs (count of 2)
@@ -151,59 +181,66 @@ public class Evaluate
 			return true;
 		
 		return false;
-	} // End isTwoPair()
-
-	/**
-	 * This method searches a hand for the highest ranked card
-	 * 
-	 * @return	The rank of the highest card
-	 */
-	public char HighCard()
-	{
-		// Set first card as high card
-		char highCard = hand[0].getRank();
-		int max = getNumericalRank(highCard);
-				
-		for (int i = 1; i < 5; i++)
-		{
-			char temp1 = hand[i].getRank();
-			int temp2 = getNumericalRank(temp1);
-			if (temp2 > max)	// If higher rank then set new max
-			{
-				max = temp2;
-				highCard = temp1;
-			}
-		}
-		return highCard; 
-	} // End HighCard()
+	} 
 	
-	/**
-	 * Returns the numerical value of the rank of a card. 
-	 * Note ace is highest rank so it has a numerical value of 14
+	/**------------------------------------------------------------------------
+	 * This method checks if a hand has two of a kind (1 pair of cars with
+	 * the same rank), three of a kind, and four of a kind
 	 * 
-	 * @param rank
-	 * @return
-	 */
-	public int getNumericalRank(char rank)
+	 * @param n		specifies whether to look for two, three, or four of a kind
+	 * @return		true / false
+	 ------------------------------------------------------------------------*/
+	private boolean ofaKind(int n)
 	{
-		switch (rank)
-		{
-			case '2': return 2;
-			case '3': return 3;
-			case '4': return 4;
-			case '5': return 5;
-			case '6': return 6;
-			case '7': return 7;
-			case '8': return 8;
-			case '9': return 9;
-			case 'T': return 10;
-			case 'J': return 11;
-			case 'Q': return 12;
-			case 'K': return 13;
-			case 'A': return 14;
-			default:  return 0;		// Should never get here
-		}
-	} // End getNumericalRank(char rank)
+		// Array to keep the count of the occurrence of each rank. Each index of
+		// the array applies to the rank of a card (index 2 applies to rank of 2) 
+		// Index 0 and 1 are placeholders, ace applies to index 14.
+		int rankCount[] = new int[15];
+		
+		// Initialize all values to 0
+		for (int i = 0; i < rankCount.length; i++)
+			rankCount[i] = 0;
+		
+		// Count the occurrence of each card
+		for (int i = 0; i < hand.length; i++) 
+			rankCount[hand[i].getNumericRank()]++;
+			
+		// Check for two, three, or four of a kind depending on n
+		for (int i = 0; i < rankCount.length; i++)
+			if (rankCount[i] == n)
+				return true;
+				
+		return false;
+	}
+	
+	/**------------------------------------------------------------------------
+	 * This method searches a hand for the highest ranked card and returns
+	 * the numerical rank of the card
+	 * 
+	 * @return
+	 ------------------------------------------------------------------------*/
+	public int HighCard()
+	{			
+		int highCard = hand[0].getNumericRank();		// Set first card as high card	
+		
+		for (int i = 1; i < hand.length; i++)			// Compare to each other card
+			if (hand[i].getNumericRank() > highCard)	// If higher rank set as new high card
+				highCard = hand[i].getNumericRank();
+	
+		return highCard; 
+	}
+		
+	/**------------------------------------------------------------------------
+	 * Checks both hands and determines who wins a tie 
+	 * 
+	 * @return	1 if p1 wins, 2 if p2 wins, 0 if game ends in a tie
+	 ------------------------------------------------------------------------*/
+	public int tieBreaker(Card p1[], Card p2[])
+	{
+		
+		
+		return 0;
+	}
 }
 
 
