@@ -14,31 +14,47 @@ public class Game
 		System.out.println("Welcome to Poker 5 Card Draw\n");
 		System.out.print("How many computer opponents do you want to play against (max 3) -> ");
 		
-		//int numberOfOpponents= input.nextInt();
-		int numberOfOpponents = 0;
+		int numberOfOpponents = -1;
 		while (numberOfOpponents > 3 || numberOfOpponents < 0)	// While not between 0 and 3
 		{
 			System.out.println("You can only play against a range of 0-3 opponents");
 			System.out.print("Enter number of opponents -> ");
 			numberOfOpponents= input.nextInt();
+			input.nextLine();
 		}
 		System.out.println("You will play aginst  " + numberOfOpponents + " computer oponent(s)");
 		
+		Player ai[] = new AI[numberOfOpponents];
+		for (int i=0; i<numberOfOpponents; i++) {
+			ai[i] = new AI();
+		}
+		
+		Player user = new Player();		// Create the user
+		
+		/*---------------------------------------------------------------------
+		 * This section handles the dealing phase
+		 *-------------------------------------------------------------------*/
 		CardPile deck = new CardPile();
 		System.out.println("The deck is being shuffled and distributed\n");
+		
+		//Draws cards alternating among AI then user until each player has 5 cards in hand
+		for (int i=0; i<5; i++){
+			for (int j=0; j<numberOfOpponents; j++)
+			{
+				ai[j].drawCard(deck);
+			}
+			user.drawCard(deck);
+		}//end for 5 card draw
 		
 		/*---------------------------------------------------------------------
 		 * This section handles user input for discarding cards
 		 * -------------------------------------------------------------------*/
-		Player user = new Player();		// Create the user 
-		user.drawCard(deck, 5);			// Give the user the first 5 cards in the deck
-		
 		// Check to see if the user has an ace in their hand
 		boolean containsAce = false;
 		
 		for (int i=0; i<5; i++)
 		{
-			if (user.getHand()[i].getRank() == 'A')
+			if ((user.getHand())[i].getRank() == 'A')
 				containsAce = true;
 		}
 		
@@ -46,17 +62,17 @@ public class Game
 		user.printHand();
 		System.out.println();
 		
-		/* 
+		/*---------------------------------------------------------------------
 		 * Get the input for which cards to discard - if the user has an ace they
 		 * can discard all 4 cards except for the ace, otherwise they can only
 		 * discard a maximum of 3 cards
-		 */
+		 *  -------------------------------------------------------------------*/
 		String discards = null;
 		boolean validDiscards = false;
 		if (containsAce)
 		{
 			System.out.println("Since you have an Ace you can keep the Ace and discard the other four cards\n"
-							 + "or you can discard any three cards");
+							 + "or you can discard up to three cards");
 			
 			while (!validDiscards)
 			{
@@ -87,10 +103,10 @@ public class Game
 						break;		// Input is fine so break out of the while loop
 				}
 				
-				// Make sure there are less than 3 characters 
-				if (discards.length() > 3)
+				// Make sure there are less than 4 characters
+				if (discards.length() > 4)
 				{
-					System.out.println("Error: You are only allowed to discard a maximum of 3 cards");
+					System.out.println("Error: You are only allowed to discard a maximum of 4 cards");
 					continue;
 				}
 				validDiscards = true;

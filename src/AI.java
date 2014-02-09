@@ -1,3 +1,8 @@
+/**
+ * 
+ * @author Emily J Austin 2/5/2014
+ */
+
 public class AI extends Player {
 /* For the computer player's turn, use the following AI algorithm.
 1. First check if the computer player already has a hand of One Pair or better. If so, discard all other card.
