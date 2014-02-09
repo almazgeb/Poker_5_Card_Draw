@@ -26,6 +26,18 @@ public class Player {
 		strength = 0;	//0 is the lowest strength
 	}//end Player()
 	
+	/**
+	 * Constructs a player with hand test_hand 
+	 */
+	public Player(Card test_hand[], int test_hand_count) {
+		hand = new Card[5];
+		hand_count = test_hand_count;
+		for (int i=0; i<test_hand_count; i++) {
+			hand[i] = test_hand[i];
+		}
+		strength = 0;	//0 is the lowest strength
+	}//end Player()
+	
 	/* Objective: Draws a card from the deck and puts the card in the player's hand.
 	 * Parameters: A CardPile deck.
 	 * Returns: The number of cards in the player's hand OR -1 on error.
@@ -82,15 +94,17 @@ public class Player {
 	 * Returns: Player's hand.
 	 */
 	public Card[] getHand() {
-		//sortHand();
+		sortHand();
 		return hand;
 	}//end getHand()
 	
 	//------------------------------------------------------------------------------
 	public void printHand()
 	{
+		sortHand();
 		for (int i=0; i<5; i++)
 			System.out.print((i+1) + ") " + hand[i].getCard() + "   ");
+		System.out.println();
 	}
 	
 	public int drawTargetCard(CardPile deck, int index)
@@ -107,18 +121,20 @@ public class Player {
 	//------------------------------------------------------------------------------
 	
 	/* Sorts the player's hand. */
-	private void sortHand() {
+	public void sortHand() {
 		HandHash hand_hash = new HandHash();
-		char top_rank=0;
 		Card new_hand[] = new Card[5];
+		char top_rank=0;		//Tracks the top rank for player's hand
 		int new_hand_count=0;
-		int top_index=0;
+		int top_rank_index=0;	//Tracks the index for top rank card in player's hand
 		
-		for (int i=0; i<5; i++) {
+		//Initializes new_hand
+		for (int i=0; i<new_hand.length; i++) {
 			new_hand[i] = null;
 		}
 		
-		for(int i=0; i<5 && hand[i] != null; i++) {
+		//Adds hand to hand_hash
+		for(int i=0; i<new_hand.length && hand[i] != null; i++) {
 			hand_hash.add(hand[i]);
 		}
 		
@@ -127,15 +143,26 @@ public class Player {
 			for (int i=0; i<hand.length; i++) {
 				if (hand[i] != null && hand[i].getRank() == top_rank) {
 					new_hand[new_hand_count++] = hand[i];
-					hand[i] = null;
+					hand[i] = new Card("0H");	//Temp place-holder card
 				}
 			}
 			top_rank = hand_hash.getTopRank();
 		}
 		
-		top_index=getTopIndex(hand);
-		while (top_index < hand.length) {
-			new_hand[new_hand_count++] = hand[top_index];
+		top_rank_index=getTopRankIndex(hand);
+		while (top_rank_index < hand.length && hand[top_rank_index] != null & new_hand_count < new_hand.length) {
+			new_hand[new_hand_count++] = hand[top_rank_index];
+			hand[top_rank_index] = new Card("0H");	//Temp place-holder card
+			top_rank_index=getTopRankIndex(hand);
+		}
+		
+		/* This deals with special case Straight 5 4 3 2 A*/
+		if (new_hand[0] != null && new_hand[0].getRank()=='A' && new_hand[1].getRank()=='5' &&
+			new_hand[2].getRank()=='4' && new_hand[3].getRank()=='3' && new_hand[4].getRank()=='2') {
+			Card ace = new_hand[0];
+			for (int i=0; i<4; i++) {
+				new_hand[i] = new_hand[i+1];
+			} new_hand[4] = ace;
 		}
 		
 		for (int i=0; i<hand.length; i++) {
@@ -143,19 +170,18 @@ public class Player {
 		}
 	}//end sortHand()
 	
-	private int getTopIndex(Card hand[]) {
-		int top_index=0;
+	private int getTopRankIndex(Card hand[]) {
+		int top_rank_index=0;
 		
-		while (top_index < hand.length && hand[top_index] == null) { top_index++; }
-		
-		if (top_index >= hand.length) { return top_index; }
+		while (top_rank_index < hand.length && hand[top_rank_index] == null) { top_rank_index++; }
+		if ( !(top_rank_index < hand.length) ) { return top_rank_index; }	//top_index = 5
 		
 		for (int i=0; i<hand.length; i++) {
-			if (hand[i] != null && hand[i].getNumericRank() > hand[top_index].getNumericRank()) {
-				top_index = i;
+			if (hand[i] != null && hand[i].getNumericRank() > hand[top_rank_index].getNumericRank()) {
+				top_rank_index = i;
 			}
 		}
 		
-		return top_index;
+		return top_rank_index;
 	}//end getTopIndex
 }//end Player

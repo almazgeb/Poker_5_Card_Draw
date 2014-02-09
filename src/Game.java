@@ -22,9 +22,9 @@ public class Game
 			numberOfOpponents= input.nextInt();
 			input.nextLine();
 		}
-		System.out.println("You will play aginst  " + numberOfOpponents + " computer oponent(s)");
+		System.out.println("You will play aginst  " + numberOfOpponents + " computer oponent(s)\n");
 		
-		Player ai[] = new AI[numberOfOpponents];
+		AI ai[] = new AI[numberOfOpponents];
 		for (int i=0; i<numberOfOpponents; i++) {
 			ai[i] = new AI();
 		}
@@ -45,6 +45,18 @@ public class Game
 			}
 			user.drawCard(deck);
 		}//end for 5 card draw
+		
+		/*---------------------------------------------------------------------
+		 * This section handles the discarding cards phase for AI
+		 * -------------------------------------------------------------------*/
+		int discard_from_index=0;
+		for (int i=0; i<numberOfOpponents; i++) {
+			discard_from_index = ai[i].play();
+			for (int j=discard_from_index; j<5; j++) {
+				ai[i].drawTargetCard(deck, j);
+			}
+			System.out.println("AI " + (i+1) + " discarded " + (5-discard_from_index) + " cards.\n");
+		}
 		
 		/*---------------------------------------------------------------------
 		 * This section handles user input for discarding cards
@@ -141,6 +153,15 @@ public class Game
 		{
 			int index = Character.getNumericValue(discards.charAt(i)-1);
 			user.drawTargetCard(deck, index);
+		}
+		System.out.println();
+		
+		/*---------------------------------------------------------------------
+		 * This section handles end evaluation
+		 *-------------------------------------------------------------------*/
+		for (int i=0; i<numberOfOpponents; i++) {
+			System.out.print("The cards in AI " + (i+1) + "'s hand are: ");
+			ai[i].printHand();
 		}
 		
 		System.out.print("The cards in your hand are: ");

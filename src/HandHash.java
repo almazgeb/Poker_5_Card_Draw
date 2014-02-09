@@ -39,6 +39,8 @@ public class HandHash {
 		//Todo: Accounting for end of cards? if top_dup==0; sort in Player.
 		char top_rank=0;
 		
+		getTopDup();
+		
 		if (top_dup <= 1) {
 			return 'E';	//Error, no distinguishing dups
 		}
@@ -62,7 +64,7 @@ public class HandHash {
 						top_rank = 'T';
 						break;
 					default:
-						top_rank = (char)( (Integer.toString(i)).charAt(0) );
+						top_rank = (Integer.toString(i+2)).charAt(0);
 						break;
 				}//end switch
 				hand_hash[i]=0;

@@ -17,9 +17,18 @@ public class Card
 {
 	private String card;
 	
-	Card() 
+	public Card() 
 	{
 		card = null;
+	}
+	
+	/**
+	 * Constructs a card with value test_card
+	 * @param test_card
+	 */
+	public Card(String test_card)
+	{
+		card = test_card;
 	}
 	
 	public void setCard(String s)
