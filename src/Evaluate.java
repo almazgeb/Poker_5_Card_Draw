@@ -7,8 +7,10 @@
  * January-February 2013
  ----------------------------------------------------------------------------*/
 /*
- * Takes a hand and evaluates for the strength based on matching pairs and best rank.
- * Assigns ranks from 1=High Card up to 9=Straight Flush.
+ * The evaluate class parses a player's hand and determines the relative
+ * strength of it; a numeric value is returned. This class also contains
+ * a method to determine the outcome of a game if two players have hands
+ * of equal strength.
  */
 public class Evaluate 
 {
@@ -16,15 +18,8 @@ public class Evaluate
 	
 	public Evaluate(Player p) 
 	{
+		//Note: gethand() sorts the player's hand before returning hand.
 		hand = p.getHand();
-		
-		/*// Test code
-		hand[0].setCard("2S");
-		hand[1].setCard("3S");
-		hand[2].setCard("4S");
-		hand[3].setCard("5S");
-		hand[4].setCard("AH");
-		*/
 	}
 	
 	/**------------------------------------------------------------------------
@@ -53,7 +48,7 @@ public class Evaluate
 			return 2;
 		else 
 			return 1;	
-	}
+	}// end getEvaluation()
 	
 	/**------------------------------------------------------------------------
 	 * Checks to see if hand is a straight flush. A straight flush occurs when
@@ -69,7 +64,7 @@ public class Evaluate
 			return true;
 		else 
 			return false;
-	} 
+	}// end isStraightFlush()
 
 	/**------------------------------------------------------------------------
 	 * Checks to see if a hand contains a full house. A full house occurs when 
@@ -84,12 +79,12 @@ public class Evaluate
 			return true;
 		else 
 			return false;
-	} 
+	}//end isFullHouse()
 	
 	/**------------------------------------------------------------------------
 	 * Checks to see if the hand contains cards of all the same suit
 	 * 
-	 * @return true  /false
+	 * @return true / false
 	 ------------------------------------------------------------------------*/
 	private boolean isFlush()
 	{
@@ -100,7 +95,7 @@ public class Evaluate
 				return false;
 	
 		return true;	
-	}
+	}//end isFlush()
 	
 	/**------------------------------------------------------------------------
 	 * Checks to see if hand is a straight. A straight is when all five cards
@@ -147,13 +142,13 @@ public class Evaluate
 		}
 		
 		return false;
-	}
+	}// end isStraight()
 	 	
 	/**------------------------------------------------------------------------
 	 * Method checks if there are 2 pairs of cards with the same rank in the 
 	 * hand.
 	 * 
-	 * @return	true/ false
+	 * @return	true / false
 	 ------------------------------------------------------------------------*/
 	private boolean isTwoPair()
 	{
@@ -178,7 +173,7 @@ public class Evaluate
 			return true;
 		
 		return false;
-	} 
+	}//end isTwoPair()
 	
 	/**------------------------------------------------------------------------
 	 * This method checks if a hand has two of a kind (1 pair of cars with
@@ -208,13 +203,13 @@ public class Evaluate
 				return true;
 				
 		return false;
-	}
+	}//end ofaKind()
 	
 	/**------------------------------------------------------------------------
 	 * This method searches a hand for the highest ranked card and returns
 	 * the numerical rank of the card
 	 * 
-	 * @return
+	 * @return Numeric rank of the highest ranked card.
 	 ------------------------------------------------------------------------*/
 	public int HighCard()
 	{			
@@ -225,19 +220,28 @@ public class Evaluate
 				highCard = hand[i].getNumericRank();
 	
 		return highCard; 
-	}
+	}// end HighCard();
 		
 	/**------------------------------------------------------------------------
 	 * Checks both hands and determines who wins a tie 
 	 * 
 	 * @return	1 if p1 wins, 2 if p2 wins, 0 if game ends in a tie
 	 ------------------------------------------------------------------------*/
-	public int tieBreaker(Card p1[], Card p2[])
+	public int tieBreaker(Player player1, Player player2)
 	{
-		
-		
-		return 0;
-	}
-}
+		Card p1[] = player1.getHand();
+		Card p2[] = player2.getHand();
+			
+		// Cards are sorted so compare each card until one with a higher rank (winner) is found
+		for (int i = 0; i < 5; i++)
+		{
+			if (p1[i].getNumericRank() > p2[i].getNumericRank())
+				return 1;
+			else if (p1[i].getNumericRank() < p2[i].getNumericRank())
+				return 2;
+		}
+		return 0;	// Both hands had cards of the same ranks so game ends in a tie	
+	}//end tieBreaker()
+}//end Evaluate
 
 

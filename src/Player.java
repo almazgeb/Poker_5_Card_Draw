@@ -145,7 +145,7 @@ public class Player {
 			} new_hand[4] = ace;
 		}
 		
-		for (int i=0; i<hand.length; i++) {
+		for (int i=0; i<MAX_HAND; i++) {
 			hand[i] = new_hand[i];
 		}
 	}//end sortHand()

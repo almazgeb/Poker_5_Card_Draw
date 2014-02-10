@@ -57,8 +57,9 @@ public class Game
 			for (int j=discard_from_index; j<5; j++) {
 				ai[i].drawTargetCard(deck, j);
 			}
-			System.out.println("AI " + (i+1) + " discarded " + (MAX_CARD-discard_from_index) + " cards.\n");
+			System.out.println("AI " + (i+1) + " discarded " + (MAX_CARD-discard_from_index) + " cards.");
 		}
+		System.out.println();
 		
 		/*---------------------------------------------------------------------
 		 * This section handles user input for discarding cards
@@ -158,23 +159,105 @@ public class Game
 		}
 		System.out.println();
 		
-		/*---------------------------------------------------------------------
-		 * This section handles end evaluation
-		 *-------------------------------------------------------------------*/
-		for (int i=0; i<numberOfOpponents; i++) {
-			System.out.print("The cards in AI " + (i+1) + "'s hand are: ");
-			ai[i].printHand();
-		}
-		
 		System.out.print("The cards in your hand are: ");
 		user.printHand();
 		System.out.println();
 		
+		input.close();
+		
+		/*---------------------------------------------------------------------
+		 * This section evaluates each player's hand and determines a winner
+		 * for the game. 
+		 * -------------------------------------------------------------------*/
+		Evaluate uEval = new Evaluate(user);
+		Evaluate cEval[] = new Evaluate[numberOfOpponents]; 
+		
+		for (int i = 0; i < cEval.length; i++) 
+			cEval[i] = new Evaluate(ai[i]); 
+
+		// Get the evaluation for each hand and store it
+		int strengths[] = new int[numberOfOpponents+1];
+		
+		// Store user's evaluation in last index of the array
+		strengths[strengths.length-1] = uEval.getEvaluation(); 
+		user.setStrength(uEval.getEvaluation());
+		
+		// Store computer's strength in the same index as in computer array
+		for (int i = 0; i < cEval.length; i++) 
+		{
+			strengths[i] = cEval[i].getEvaluation();  
+			ai[i].setStrength(strengths[i]);
+		}
+		
+		// Determine the winner with the highest ranked hand 
+		int strongest = strengths[0];
+		int strongestIndex = 0;
+		
+		// Find the max
+		for (int i = 1; i < strengths.length; i++) 
+		{
+			if (strengths[i] > strongest)
+			{
+				strongest = strengths[i];
+				strongestIndex = i;
+			}
+		}
+		
+		// Check for ties
+		for (int i = 0; i < strengths.length; i++) 
+		{
+			if (strengths[i] == strongest && strongestIndex != i)
+			{
+				int result;
+				// If one of the players is a user
+				if ((strengths.length-1) == i || (strengths.length-1) == strongestIndex)
+				{
+					result = uEval.tieBreaker(user, ai[i]);
+					
+					// Game ends in a tie
+					if (result == 0)
+					{
+						System.out.println("Tie game, both user and computer " + (i+1) + " have equal strength hands");
+						break;
+					}
+				}
+				// Two computer players
+				else 
+				{
+					result = uEval.tieBreaker(ai[strongestIndex], ai[i]);
+					
+					// Game ends in a tie
+					if (result == 0)
+					{
+						System.out.println("Tie game, computer "+ (i+1) + " and computer "
+											+ (strongestIndex + 1) + "have equal strength hands");
+						break;
+					}
+				}
+			}
+		}
+		
+		// Print all of the computer hands and show winner
+		if (strongestIndex == strengths.length-1)	// User wins
+			System.out.println("You win!\n");
+		else 
+			System.out.println("Computer " + (strongestIndex + 1) + " wins!");
+		
+		System.out.println("----------------------------------------\nYour hand: ");
+		printHandType(user.getStrength());
+		user.printHand();
+
+		// Print put computer opponent hands
+		for (int i = 0; i < ai.length; i++) 
+		{
+			System.out.println("----------------------------------------");
+			System.out.println("Computer " + (i+1) + "'s hand: ");
+				printHandType(ai[i].getStrength());
+				ai[i].printHand();
+		}
+		
+		System.out.println("\nThank you for playing Five Card Draw Poker");
 	} // End main()
-	
-	/*---------------------------------------------------------------------
-	 * Methods for the Game class
-	 * -------------------------------------------------------------------*/
 	
 	/**
 	 * Checks to see if the input string for discards by the user is valid. The string
@@ -204,6 +287,28 @@ public class Game
 			}
 		}
 		return true;
-	}
+	}//end validInput()
+	
+	/**------------------------------------------------------------------------
+	 * Method prints out the strength of hand based on the parameter
+	 * 
+	 * @param type strength of hand
+	 ------------------------------------------------------------------------*/
+	public static void printHandType(int type) 
+	{
+		switch (type)
+		{
+			case 9: System.out.print("Straight Flush: "); break;
+			case 8: System.out.print("Four of a kind: "); break;
+			case 7: System.out.print("Full house: "); break;
+			case 6: System.out.print("Flush: "); break;
+			case 5: System.out.print("Straight : "); break;
+			case 4: System.out.print("Three of a kind: "); break;
+			case 3: System.out.print("Two pair: "); break;
+			case 2: System.out.print("One pair: "); break;
+			case 1: System.out.print("High card: "); break;
+			default: break;
+		}
+	}//end printHandType()
 	
 } // End class Game
