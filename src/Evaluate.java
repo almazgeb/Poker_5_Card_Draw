@@ -7,11 +7,8 @@
  * January-February 2013
  ----------------------------------------------------------------------------*/
 /*
- * Will add description
- * 
- * 
- * 
- * 
+ * Takes a hand and evaluates for the strength based on matching pairs and best rank.
+ * Assigns ranks from 1=High Card up to 9=Straight Flush.
  */
 public class Evaluate 
 {

@@ -1,36 +1,36 @@
-/* Player Class
- * Keep's track of the number of cards in a player's hand and what cards the player has.
- * The hand is an array of 5 cards initialized to NULL representing no cards.
- * Functions:
- * 		drawCard(CardPile deck), drawCard(CardPile deck, int card_count)
- * 		discardCard(int card)
- * 		getHand()
- * 		printHand()
- * 		sortHand()
- * Emily J. Austin, 2.2.2014 @ 24:12
+/**
+ * Player Class
+ * Keeps track of the player's hand, hand_count, and strength where strength refers to
+ * "the strength of one player's hand compared with another player's hand."
+ * @author Emily J. Austin February 2, 2014
  */
 
 public class Player {
-	protected Card hand[];	//The player's hand
-	private int hand_count;	//The player's hand count
-	protected int strength;	//The player's hand strength based on evaluation, 0 is lowest
+	static int MAX_HAND=5;
 	
-	/* Constructs a player holding no cards. 
+	protected Card hand[];
+	private int hand_count;	//Number of cards in hand
+	protected int strength;
+	
+	/**
+	 * Constructs a Player holding no cards.
 	 */
 	public Player() {
-		hand = new Card[5];
+		hand = new Card[MAX_HAND];
 		hand_count = 0;
-		for (int i=0; i<5; i++) {
+		for (int i=0; i<MAX_HAND; i++) {
 			hand[i] = null;
 		}
 		strength = 0;	//0 is the lowest strength
 	}//end Player()
 	
 	/**
-	 * Constructs a player with hand test_hand 
+	 * Constructs a player holding cards from test_hand. Used for testing.
+	 * @param test_hand
+	 * @param test_hand_count
 	 */
 	public Player(Card test_hand[], int test_hand_count) {
-		hand = new Card[5];
+		hand = new Card[MAX_HAND];
 		hand_count = test_hand_count;
 		for (int i=0; i<test_hand_count; i++) {
 			hand[i] = test_hand[i];
@@ -38,125 +38,105 @@ public class Player {
 		strength = 0;	//0 is the lowest strength
 	}//end Player()
 	
-	/* Objective: Draws a card from the deck and puts the card in the player's hand.
-	 * Parameters: A CardPile deck.
-	 * Returns: The number of cards in the player's hand OR -1 on error.
+	/**
+	 * Draws a card from CardPile deck.
+	 * @param deck
 	 */
-	public int drawCard(CardPile deck) {
-		if (hand_count >= 5) {
+	public void drawCard(CardPile deck) {
+		if (hand_count >= MAX_HAND) {
 			System.out.println("Invalid: You cannot draw another card.");
-			return -1;
 		}
 		hand[hand_count++] = deck.drawCard();
-		return hand_count;
 	}//end drawCard()
 	
-	/* Objective: Draws card_count number of cards from the deck and puts the card in the player's hand.
-	 * Parameters: A CardPile deck, an int card_count for the number of cards to draw.
-	 * Returns: The number of cards in the player's hand OR -1 on error.
-	 */
-	public int drawCard(CardPile deck, int card_count) {
-		if (hand_count+card_count > 5) {
-			System.out.println("Invalid: You cannot draw" + card_count + " more cards.");
-			return -1;
-		}
-		for (int i=0; i<card_count; i++)
-		hand[hand_count++] = deck.drawCard();
-		return hand_count;
-	}//end drawCard()
-	
-	/* Objective: Discard card at index card.
-	 * Parameter: Int card for the index of the card to discard.
-	 * Returns: Card discarded.
-	 */
-	public Card discardCard(int card) {
-		Card discard = hand[card];
-		hand[card] = null;
-		hand_count--;
-		hand[card] = hand[hand_count-1];
-		return discard;
-	}//end discardCard
-	
-	/* Returns: Player's hand strength.*/
 	public int getStrength() {
 		return strength;
 	}//end getStrength()
 	
-	/* Objective: Sets player's hand strength.
-	 * Returns: New hand strength.
-	 */
 	public int setStrength(int new_strength) {
 		strength = new_strength;
 		return strength;
 	}//end setStrength()
 	
-	/* Objective: Return the player's hand.
-	 * Returns: Player's hand.
+	/**
+	 * @return The hand in sorted order with respect to best strengths or best matches.
 	 */
 	public Card[] getHand() {
 		sortHand();
 		return hand;
 	}//end getHand()
 	
-	//------------------------------------------------------------------------------
+	/**
+	 * Prints the hand with indexes in sorted order with respect to best strengths or best matches.
+	 * @author Adam Socik
+	 */
 	public void printHand()
 	{
 		sortHand();
-		for (int i=0; i<5; i++)
+		for (int i=0; i<MAX_HAND; i++)
 			System.out.print((i+1) + ") " + hand[i].getCard() + "   ");
 		System.out.println();
-	}
+	}//end printHand()
 	
+	/**
+	 * Discards the Card at index and draws the next Card in CardPile deck.
+	 * @param deck
+	 * @param index
+	 * @return The hand_count or -1 on error.
+	 * @author Adam Socik
+	 */
 	public int drawTargetCard(CardPile deck, int index)
 	{
-		if (hand_count > 5) 
+		if (hand_count > MAX_HAND) 
 		{
 			System.out.println("Invalid: You cannot draw another card.");
 			return -1;
 		}
 		hand[index] = deck.drawCard();
 		return hand_count;
-	}
+	}// end drawTargetCard()
 	
-	//------------------------------------------------------------------------------
-	
-	/* Sorts the player's hand. */
+	/**
+	 * Sorts the hand with respect to best strengths or best matches.
+	 */
 	public void sortHand() {
 		HandHash hand_hash = new HandHash();
-		Card new_hand[] = new Card[5];
-		char top_rank=0;		//Tracks the top rank for player's hand
+		Card new_hand[] = new Card[MAX_HAND];
+		char top_rank=0;				//Tracks the top rank for hand
+		int top_rank_index=0;			//Tracks the index for top rank card in hand
 		int new_hand_count=0;
-		int top_rank_index=0;	//Tracks the index for top rank card in player's hand
 		
-		//Initializes new_hand
-		for (int i=0; i<new_hand.length; i++) {
+		//Initializes new_hand to null.
+		for (int i=0; i<MAX_HAND; i++) {
 			new_hand[i] = null;
 		}
 		
-		//Adds hand to hand_hash
-		for(int i=0; i<new_hand.length && hand[i] != null; i++) {
+		//Adds hand to hand_hash.
+		for(int i=0; i<MAX_HAND && hand[i] != null; i++) {
 			hand_hash.add(hand[i]);
 		}
 		
+		//Gets cards with respect to best matches.
 		top_rank = hand_hash.getTopRank();
 		while (top_rank != 'E' && top_rank != 'S') {
-			for (int i=0; i<hand.length; i++) {
+			for (int i=0; i<hand_count; i++) {
 				if (hand[i] != null && hand[i].getRank() == top_rank) {
 					new_hand[new_hand_count++] = hand[i];
-					hand[i] = new Card("0H");	//Temp place-holder card
+					hand[i] = new Card("0H");	//Temp place-holder card with lowest rank.
 				}
 			}
 			top_rank = hand_hash.getTopRank();
 		}
 		
+		//Gets cards with respect to best rank.
 		top_rank_index=getTopRankIndex(hand);
-		while (top_rank_index < hand.length && hand[top_rank_index] != null & new_hand_count < new_hand.length) {
+		while (top_rank_index < hand_count && hand[top_rank_index] != null && new_hand_count < MAX_HAND) {
 			new_hand[new_hand_count++] = hand[top_rank_index];
-			hand[top_rank_index] = new Card("0H");	//Temp place-holder card
+			hand[top_rank_index] = new Card("0H");	//Temp place-holder card with lowest rank.
 			top_rank_index=getTopRankIndex(hand);
 		}
 		
-		/* This deals with special case Straight 5 4 3 2 A*/
+		//This deals with special case, Straight 5 4 3 2 A
 		if (new_hand[0] != null && new_hand[0].getRank()=='A' && new_hand[1].getRank()=='5' &&
 			new_hand[2].getRank()=='4' && new_hand[3].getRank()=='3' && new_hand[4].getRank()=='2') {
 			Card ace = new_hand[0];
@@ -170,13 +150,17 @@ public class Player {
 		}
 	}//end sortHand()
 	
+	/**
+	 * @param hand
+	 * @return The index of the top rank Card in hand or 5 if no cards are left in hand.
+	 */
 	private int getTopRankIndex(Card hand[]) {
 		int top_rank_index=0;
 		
-		while (top_rank_index < hand.length && hand[top_rank_index] == null) { top_rank_index++; }
-		if ( !(top_rank_index < hand.length) ) { return top_rank_index; }	//top_index = 5
+		while (top_rank_index < MAX_HAND && hand[top_rank_index] == null) { top_rank_index++; }
+		if ( !(top_rank_index < MAX_HAND) ) { return top_rank_index; }	//top_index=5
 		
-		for (int i=0; i<hand.length; i++) {
+		for (int i=0; i<MAX_HAND; i++) {
 			if (hand[i] != null && hand[i].getNumericRank() > hand[top_rank_index].getNumericRank()) {
 				top_rank_index = i;
 			}

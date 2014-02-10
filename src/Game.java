@@ -4,7 +4,9 @@ import java.lang.*;
 public class Game 
 {
 	public static void main(String[] args) 
-	{
+	{	
+		final int MAX_CARD = 5;
+		
 		/*---------------------------------------------------------------------
 		 * This section sets up the deck and prompts user for number of computer
 		 * players in the game
@@ -38,7 +40,7 @@ public class Game
 		System.out.println("The deck is being shuffled and distributed\n");
 		
 		//Draws cards alternating among AI then user until each player has 5 cards in hand
-		for (int i=0; i<5; i++){
+		for (int i=0; i<MAX_CARD; i++){
 			for (int j=0; j<numberOfOpponents; j++)
 			{
 				ai[j].drawCard(deck);
@@ -55,7 +57,7 @@ public class Game
 			for (int j=discard_from_index; j<5; j++) {
 				ai[i].drawTargetCard(deck, j);
 			}
-			System.out.println("AI " + (i+1) + " discarded " + (5-discard_from_index) + " cards.\n");
+			System.out.println("AI " + (i+1) + " discarded " + (MAX_CARD-discard_from_index) + " cards.\n");
 		}
 		
 		/*---------------------------------------------------------------------
@@ -64,7 +66,7 @@ public class Game
 		// Check to see if the user has an ace in their hand
 		boolean containsAce = false;
 		
-		for (int i=0; i<5; i++)
+		for (int i=0; i<MAX_CARD; i++)
 		{
 			if ((user.getHand())[i].getRank() == 'A')
 				containsAce = true;
@@ -204,22 +206,4 @@ public class Game
 		return true;
 	}
 	
-} // End class Game 
-
-
-
-
-
-/*---------------------------------------------------------------------
- * 
- * -------------------------------------------------------------------*/
-
-/*
-		Card c = deck.drawCard();	// Take card on top of deck
-		System.out.println("\nTop: " + c.getCard() + " " + c.getRank() + " " + c.getSuit());
-		System.out.println("Top of deck array position: " + deck.getTopOfDeck());
-		
-		c = deck.drawCard();	// Take another card from the top
-		System.out.println("Top: " + c.getCard() + " " + c.getRank() + " " + c.getSuit());
-		System.out.println("Top of deck array position: " + deck.getTopOfDeck());
-*/
+} // End class Game

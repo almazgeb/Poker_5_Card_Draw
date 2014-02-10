@@ -8,7 +8,7 @@
  ----------------------------------------------------------------------------*/
 /*
  * A card is a 2 character string with index 0 representing the rank of the
- * card and index 0 representing the suit of the card.
+ * card and index 1 representing the suit of the card.
  * 
  * This class' methods are all setters and getters that initialize the card,
  * and can return the card itself, the suit, or the rank.
@@ -17,13 +17,13 @@ public class Card
 {
 	private String card;
 	
-	public Card() 
+	public Card()
 	{
 		card = null;
 	}
 	
 	/**
-	 * Constructs a card with value test_card
+	 * Constructs a card with value test_card.
 	 * @param test_card
 	 */
 	public Card(String test_card)
@@ -51,6 +51,10 @@ public class Card
 		return card.charAt(1);
 	}
 	
+	/**
+	 * @return Numeric rank of card where numeric rank is rank-2 or
+	 * special cases for A-T.
+	 */
 	public int getNumericRank() {
 		char rank = getRank();
 		switch (rank) {

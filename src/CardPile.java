@@ -8,11 +8,11 @@
  ----------------------------------------------------------------------------*/
 /*
  * A card pile is a class to hold the data structure of the 52 card deck which 
- * is an array of Card objects. There is also an integer that is used as an 
+ * is an array of Card objects. There is an integer that is used as an 
  * array index to signify the top of the deck. 
  * 
- * The class' constructor creates and initializes a 52 card deck and the shuffles it.
- * The class' methods include a getter for the top of the deck, a drawCard method,
+ * The class's constructor creates and initializes a 52 card deck and the shuffles it.
+ * The class's methods include a getter for the top of the deck, a drawCard method,
  * and a method to print the deck.
  *  
  */
@@ -21,7 +21,7 @@ import java.util.*;
 
 public class CardPile 
 {
-	private int topOfDeck = 0;
+	private int topOfDeck = 0;	//Tracks the index of the top of the deck.
 	private Card deck[];
 	
 	// Constructs a shuffled deck of cards
@@ -33,7 +33,7 @@ public class CardPile
 			deck[i] = new Card();
 		
 		/*
-		 * Initialize each card
+		 * Initializes each card
 		 * Unshuffled deck by array index: 
 		 * 			2  3  4  5  6  7  8  9  T  J  Q  K  A
 		 * Clubs:	0  1  2  3  4  5  6  7  8  9  10 11 12
@@ -87,18 +87,8 @@ public class CardPile
 			}
 		}
 		
-		// Left this here for debugging
-		//System.out.print("Unshuffled -> ");
-		//printDeck();	
-		//System.out.println();
-		
 		Collections.shuffle(Arrays.asList(deck));	// Shuffle the deck
-		
-		// Left this here for debugging
-		//System.out.print("\nShuffled   -> ");
-		//printDeck();
-		//System.out.println();
-	}
+	}//end CardPile()
 		
 	// Returns the current position of the deck array
 	public int getTopOfDeck()
@@ -114,9 +104,9 @@ public class CardPile
 		return c;
 	}
 	 
-	public void printDeck()
+	private void printDeck()
 	{
 		for (int i=0; i<52; i++)
 			System.out.print(deck[i].getCard() + " ");
 	}
-}
+}//end CardPile
