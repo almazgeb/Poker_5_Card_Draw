@@ -43,7 +43,7 @@ public class HandHash {
 			return 'E';	//No distinguishing duplicates.
 		}
 	
-		for (int i=MAX_HAND-1; i>=0; i--) {
+		for (int i=hand_hash.length-1; i>=0; i--) {
 			if (hand_hash[i] >= top_dup) {
 				switch (i) {
 					case 12:

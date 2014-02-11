@@ -227,11 +227,8 @@ public class Evaluate
 	 * 
 	 * @return	1 if p1 wins, 2 if p2 wins, 0 if game ends in a tie
 	 ------------------------------------------------------------------------*/
-	public int tieBreaker(Player player1, Player player2)
-	{
-		Card p1[] = player1.getHand();
-		Card p2[] = player2.getHand();
-			
+	public int tieBreaker(Card p1[], Card p2[])
+	{			
 		// Cards are sorted so compare each card until one with a higher rank (winner) is found
 		for (int i = 0; i < 5; i++)
 		{

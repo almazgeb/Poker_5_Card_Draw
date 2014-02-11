@@ -65,8 +65,7 @@ public class Game
 		 * This section handles user input for discarding cards
 		 * -------------------------------------------------------------------*/
 		// Check to see if the user has an ace in their hand
-		boolean containsAce = false;
-		
+		boolean containsAce = false;	
 		for (int i=0; i<MAX_CARD; i++)
 		{
 			if ((user.getHand())[i].getRank() == 'A')
@@ -151,20 +150,23 @@ public class Game
 			} // End while
 		} // End else
 		
-		// Get new cards
-		for (int i=0; i<discards.length(); i++)
+		// If user wanted to discard a card
+		if (Character.getNumericValue(discards.charAt(0)) != 0)
 		{
-			int index = Character.getNumericValue(discards.charAt(i)-1);
-			user.drawTargetCard(deck, index);
+			// Get new cards
+			for (int i=0; i<discards.length(); i++)
+			{
+				int index = Character.getNumericValue(discards.charAt(i)-1);
+				user.drawTargetCard(deck, index);
+			}
 		}
-		System.out.println();
 		
 		System.out.print("The cards in your hand are: ");
 		user.printHand();
 		System.out.println();
 		
 		input.close();
-		
+				
 		/*---------------------------------------------------------------------
 		 * This section evaluates each player's hand and determines a winner
 		 * for the game. 
@@ -204,6 +206,7 @@ public class Game
 		}
 		
 		// Check for ties
+		boolean tie = false;
 		for (int i = 0; i < strengths.length; i++) 
 		{
 			if (strengths[i] == strongest && strongestIndex != i)
@@ -212,45 +215,58 @@ public class Game
 				// If one of the players is a user
 				if ((strengths.length-1) == i || (strengths.length-1) == strongestIndex)
 				{
-					result = uEval.tieBreaker(user, ai[i]);
+					result = uEval.tieBreaker(user.getHand(), ai[strongestIndex].getHand());
+					
+					// Set stronger hand as the strongest index
+					if (result == 1)
+						strongestIndex = i;
 					
 					// Game ends in a tie
 					if (result == 0)
 					{
 						System.out.println("Tie game, both user and computer " + (i+1) + " have equal strength hands");
+						tie = true;
 						break;
 					}
 				}
 				// Two computer players
 				else 
 				{
-					result = uEval.tieBreaker(ai[strongestIndex], ai[i]);
+					result = uEval.tieBreaker(ai[i].getHand(), ai[strongestIndex].getHand());
+					
+					// Set stronger hand as the strongest index
+					if (result == 1)
+						strongestIndex = i;
 					
 					// Game ends in a tie
 					if (result == 0)
 					{
 						System.out.println("Tie game, computer "+ (i+1) + " and computer "
-											+ (strongestIndex + 1) + "have equal strength hands");
+											+ (strongestIndex + 1) + " have equal strength hands");
+						tie = true;
 						break;
 					}
-				}
+				}// End else
 			}
 		}
 		
 		// Print all of the computer hands and show winner
-		if (strongestIndex == strengths.length-1)	// User wins
-			System.out.println("You win!\n");
-		else 
-			System.out.println("Computer " + (strongestIndex + 1) + " wins!");
+		if (!tie)
+		{
+			if (strongestIndex == strengths.length-1)	// User wins
+				System.out.println("You win!\n");
+			else 
+				System.out.println("Computer " + (strongestIndex + 1) + " wins!");
+		}
 		
-		System.out.println("----------------------------------------\nYour hand: ");
+		System.out.println("--------------------------------------------------\nYour hand: ");
 		printHandType(user.getStrength());
 		user.printHand();
 
 		// Print put computer opponent hands
 		for (int i = 0; i < ai.length; i++) 
 		{
-			System.out.println("----------------------------------------");
+			System.out.println("--------------------------------------------------");
 			System.out.println("Computer " + (i+1) + "'s hand: ");
 				printHandType(ai[i].getStrength());
 				ai[i].printHand();
@@ -280,7 +296,7 @@ public class Game
 			
 			// Make sure the number is between 1 and 5
 			int temp = Character.getNumericValue(s.charAt(i));
-			if (temp > 5 || temp< 1)
+			if (temp > 5 || temp< 0)
 			{
 				System.out.println("Error: Input contained numeric values not in range of 1 to 5");
 				return false;
